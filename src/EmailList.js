@@ -11,8 +11,9 @@ import {
     Redo,
     Settings
 } from "@mui/icons-material";
-import {Checkbox, IconButton} from "@mui/material";
+import { Checkbox, IconButton } from "@mui/material";
 import Section from "./Section";
+import EmailRow from "./EmailRow";
 
 function EmailList(props) {
     return (
@@ -50,6 +51,23 @@ function EmailList(props) {
                 <Section Icon={Inbox} title='Primary' color="red" selected />
                 <Section Icon={People} title='Social' color="#1A73E8" />
                 <Section Icon={LocalOffer} title='Promotions' color="green" />
+            </div>
+
+            <div className="emailList__list">
+                <EmailRow
+                    title="Twitch"
+                    subject="Hello from twitch!"
+                    description="This is a test!"
+                    time="10pm"
+                />
+            </div>
+            <div className="emailList__list">
+                <EmailRow
+                    title="Twitch"
+                    subject="Hello from twitch!"
+                    description="This is a test! This is a test! This is a test! This is a test!"
+                    time="10pm"
+                />
             </div>
         </div>
     );
