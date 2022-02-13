@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './EmailList.css';
 import {
     ArrowDropDown,
@@ -14,8 +14,28 @@ import {
 import { Checkbox, IconButton } from "@mui/material";
 import Section from "./Section";
 import EmailRow from "./EmailRow";
+import { db } from "./firebase";
+import { query, collection, orderBy, onSnapshot } from "firebase/firestore"
 
-function EmailList(props) {
+function EmailList() {
+    const [emails, setEmails] = useState([]);
+
+    useEffect(() => {
+        const citiesQuery = query(
+            collection(db, "emails"),
+            orderBy("timestamp", "desc")
+        );
+        onSnapshot(citiesQuery, (querySnapshot) => {
+            setEmails(querySnapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    data: data,
+                }
+            }));
+        });
+    }, [])
+
     return (
         <div className="emailList">
             <div className="emailList__settings">
@@ -54,20 +74,16 @@ function EmailList(props) {
             </div>
 
             <div className="emailList__list">
-                <EmailRow
-                    title="Twitch"
-                    subject="Hello from twitch!"
-                    description="This is a test!"
-                    time="10pm"
-                />
-            </div>
-            <div className="emailList__list">
-                <EmailRow
-                    title="Twitch"
-                    subject="Hello from twitch!"
-                    description="This is a test! This is a test! This is a test! This is a test!"
-                    time="10pm"
-                />
+                {emails.map(({id , data: {to, subject, message, timestamp}}) => (
+                    <EmailRow
+                        id={id}
+                        key={id}
+                        title={to}
+                        subject={subject}
+                        description={message}
+                        time={new Date(timestamp?.seconds * 1000).toUTCString()}
+                    />
+                ))}
             </div>
         </div>
     );
